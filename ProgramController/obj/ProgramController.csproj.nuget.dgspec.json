@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\MingProgram\\asp.net-learning\\ProgramController\\ProgramController.csproj": {}
+    "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramController\\ProgramController.csproj": {}
   },
   "projects": {
-    "D:\\MingProgram\\asp.net-learning\\ProgramController\\ProgramController.csproj": {
+    "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramController\\ProgramController.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\MingProgram\\asp.net-learning\\ProgramController\\ProgramController.csproj",
+        "projectUniqueName": "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramController\\ProgramController.csproj",
         "projectName": "ProgramController",
-        "projectPath": "D:\\MingProgram\\asp.net-learning\\ProgramController\\ProgramController.csproj",
+        "projectPath": "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramController\\ProgramController.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\MingProgram\\asp.net-learning\\ProgramController\\obj\\",
+        "outputPath": "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramController\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

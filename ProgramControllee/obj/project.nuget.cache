@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZnhiSPH4yDhIcmXkmUfQzh7I28py6YL2tpnQqayf90y5q0F8S5H/y/3uqw55XQAf5LOpGdX7j2LGrrJFxD5T5w==",
+  "dgSpecHash": "iisFFG2BbMTTS8A5dYkPoTtT/KmLm4J1OGxnake9rUt2NybOgZbggjuCPCXE2JCk+uo0+G+gjCG5HgHQIAtTkQ==",
   "success": true,
-  "projectFilePath": "D:\\MingProgram\\asp.net-learning\\UnityTest\\UnityTest.csproj",
+  "projectFilePath": "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramControllee\\ProgramControllee.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\system.configuration.configurationmanager\\7.0.0\\system.configuration.configurationmanager.7.0.0.nupkg.sha512",
