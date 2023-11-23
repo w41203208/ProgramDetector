@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Net.Sockets;
 
 namespace UnityTest
 {
     class Message
     {
         public string? Type { get; set; }
-        public string? Tag { get; set; }
+        public string? Tags { get; set; }
     }
 
     class Utils
@@ -17,44 +16,64 @@ namespace UnityTest
 
             return process_number++;
         }
+
+        // may have to fix this function 
         public static Message SplitMessageString(string msg)
         {
             string[] words = msg.Split(" ");
-            if(words.Length < 2 ) 
+            
+            if (words.Length == 1)
             {
                 return new Message
                 {
                     Type = words[0],
-                    Tag = null,
+                    Tags = null,
+                };
+            }
+
+            if (words.Length > 2 || words.Length < 1)
+            {
+                // Error format is invalid
+                return new Message
+                {
+                    Type = null,
+                    Tags = null,
                 };
             }
             else
             {
-                if (words[1] == "")
+                return new Message
                 {
-                    return new Message
-                    {
-                        Type = words[0],
-                        Tag = null,
-                    };
+                    Type = words[0],
+                    Tags = words[1]
+                };
+            }
+        }
+        public static List<string> PraseMessageTags(string tagsStr)
+        {
+
+            List<string> tags = new ();
+            string[] words = tagsStr.Split('$');
+            for (int i = 1; i < words.Length; i++)
+            {
+                string[] keyValue = words[i].Split("=");
+                if (keyValue.Length == 2)
+                {
+                    tags.Add(keyValue[0] + "=" + keyValue[1]);
                 }
                 else
                 {
-                    return new Message
-                    {
-                        Type = words[0],
-                        Tag = words[1]
-                    };
+                    // Error
                 }
             }
+            return tags;
         }
-        public static string? GetMessageTagString(string tagsStr,string tag)
+        public static string? GetTagString(List<string> tags,string tag)
         {
-            string[] words = tagsStr.Split('$');
-            for(int i = 1; i < words.Length; i++)
+            foreach (var tagg in tags)
             {
-                string[] keyValue = words[i].Split("=");
-                if(keyValue.Length == 2)
+                string[] keyValue = tagg.Split("=");
+                if (keyValue.Length == 2)
                 {
                     if (keyValue[0] == tag)
                     {
@@ -63,6 +82,48 @@ namespace UnityTest
                 }
             }
             return null;
+        }
+        public static List<string> RemoveTagString(List<string> tags, string tag)
+        {
+            List<string> newTags = new();
+            foreach (var tagg in tags)
+            {
+                string[] keyValue = tagg.Split("=");
+                if (keyValue.Length == 2)
+                {
+                    if (keyValue[0] != tag)
+                    {
+                        newTags.Add(tagg);
+                    }
+                }
+            }
+            return newTags;
+        }
+
+        public static string TransformTags(List<string> tags)
+        {
+            string newTagStr = "";
+            foreach (var tag in tags)
+            {
+                string[] keyValue = tag.Split("=");
+                if (keyValue.Length == 2)
+                {
+                    string key = keyValue[0];
+                    string value = keyValue[1];
+                    if (key != tag)
+                    {
+                        newTagStr += key;
+                        newTagStr += "=";
+                        newTagStr += value;
+                        newTagStr += " ";
+                    }
+                }
+                else
+                {
+                    // Error
+                }
+            }
+            return newTagStr;
         }
 
         public static string GetProcessInstanceName(int pid)

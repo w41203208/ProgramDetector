@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Pipes;
 
 namespace UnityTest
 {
@@ -45,10 +40,10 @@ namespace UnityTest
             switch (msg.Type)
             {
                 case "open":
-                    cmd = _factory.CreateCommand(CommandFactory.CommandType.Open, msg.Tag);
+                    cmd = _factory.CreateCommand(CommandType.Open, msg.Tags);
                     break;
                 case "close":
-                    cmd = _factory.CreateCommand(CommandFactory.CommandType.Close, msg.Tag);
+                    cmd = _factory.CreateCommand(CommandType.Close, msg.Tags);
                     break;
             }
             _cmdMgr.AddCommand(cmd);

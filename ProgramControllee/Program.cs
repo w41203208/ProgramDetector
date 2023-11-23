@@ -1,7 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-
-using System.Diagnostics;
 using System.IO.Pipes;
 using UnityTest;
 
@@ -12,17 +10,13 @@ class Program
         DetectorManager detecterMgr = new DetectorManager();
         CommandManager cmdMgr = new CommandManager();
         CommandFactory cmdFactory = new CommandFactory(detecterMgr);
+        PipeChannel pipe = new PipeChannel(cmdFactory, cmdMgr, PipeDirection.In, "pipe");
 
-        PipeChannel pipe = new PipeChannel(cmdFactory, cmdMgr, PipeDirection.In, "unity-pipe");
         Thread pipeThread = new Thread(pipe.Start);
         pipeThread.Start();
 
-
         Thread cmdThread = new Thread(cmdMgr.Consume);
         cmdThread.Start();
-
-
-
 
         return;
     }

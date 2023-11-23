@@ -1,5 +1,5 @@
 ﻿
-using System.Data;
+
 using System.Diagnostics;
 
 namespace UnityTest
@@ -13,16 +13,18 @@ namespace UnityTest
     {
         private string? _pname; //process-name
         private readonly string _prefix;
+        private readonly string? _args;
         private readonly string? _path;
         private DateTime _lastUpdateTime;
 
         private Thread? _t;
         private Process? _proc;
-        public Detector(string? path, string? prefix)
+        public Detector(string? path, string? prefix, string? args)
         {
             _t = null;
             _prefix = prefix ?? Utils.GetProcessNumber().ToString();
             _path = path;
+            _args = args;
             _proc = null;
             _lastUpdateTime = DateTime.Now;
         }
@@ -48,8 +50,15 @@ namespace UnityTest
             {
                 return;
             }
-
-            ProcessStartInfo startInfo = new ProcessStartInfo(_path);
+            ProcessStartInfo startInfo;
+            if (_args != null)
+            {
+                startInfo = new ProcessStartInfo(_path, _args);
+            }
+            else{
+                startInfo = new ProcessStartInfo(_path);
+            }
+            
 
             startInfo.WindowStyle = ProcessWindowStyle.Minimized;
 
@@ -70,11 +79,12 @@ namespace UnityTest
                     var now = DateTime.Now;
                     var timeDuration = now - _lastUpdateTime;
                     _lastUpdateTime = now;
-                    // use pc
+                    
                     if (timeDuration.TotalSeconds > 1)
                     {
-                        PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
-                        Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
+                        //// use pc
+                        //PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
+                        //Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
 
                         Console.WriteLine($"{_pname}");
                         Console.WriteLine("-------------------------------------");
@@ -107,8 +117,10 @@ namespace UnityTest
                 {
                     if (_t.IsAlive)
                     {
-                        _proc?.Close();
-                        _t.Abort();
+                        Console.WriteLine(_t.ThreadState);
+                        _t.Join();
+                        
+                        //_proc?.Close();
                     }
                 }
             }

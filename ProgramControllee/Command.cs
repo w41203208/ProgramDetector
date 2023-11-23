@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace UnityTest
 {
@@ -11,35 +7,75 @@ namespace UnityTest
         void Execute();
     }
 
-    class OpenCommand : ICommand
+    class Command
     {
-        private DetectorManager _dMgr;
-        private string? _prefix = null;
-        private string? _path = null;
-        public OpenCommand(DetectorManager mgr, string? path, string? prefix)
+        protected string? _argsString;
+        public Command(string? argsString)
         {
-            _dMgr = mgr;
-            _path = path;
-            _prefix = prefix;
-        }
-        public void Execute()
-        {
-            _dMgr.CreateAndOpenDetector(_path, _prefix);
+            _argsString = argsString;
         }
     }
 
-    class CloseCommand : ICommand
+    class OpenCommand : Command,  ICommand
     {
-        private DetectorManager _dMgr;
-        private string _prefix;
-        public CloseCommand(DetectorManager mgr, string prefix)
+        private DetectorManager _detecterMgr;
+        private string _path;
+        public OpenCommand(DetectorManager detecterMgr, string path, string? argsString): base(argsString)
         {
-            _dMgr = mgr;
-            _prefix = prefix;
+            _detecterMgr = detecterMgr;
+            _path = path;
         }
         public void Execute()
         {
-            _dMgr.RemoveDetector(_prefix);
+            string? prefix = null;
+            string? args = null;
+            List<string> tags = new();
+            if (_argsString != null)
+            {
+                tags = Utils.PraseMessageTags(_argsString);
+                prefix = Utils.GetTagString(tags, "prefix");
+                Console.WriteLine($"Prefix: {prefix}");
+                if (prefix != null)
+                {
+                    tags = Utils.RemoveTagString(tags, "prefix");
+                }
+                args = Utils.TransformTags(tags);
+            }
+            Console.WriteLine($"Args: {args}");
+            _detecterMgr.CreateAndOpenDetector(_path, prefix, args);
+        }
+
+    }
+
+    class CloseCommand : Command, ICommand
+    {
+        private DetectorManager _detecterMgr;
+        public CloseCommand(DetectorManager detecterMgr, string? argsString) : base(argsString)
+        {
+            _detecterMgr = detecterMgr;
+        }
+        public void Execute()
+        {
+            List<string> tags = new();
+            string? prefix;
+            if (_argsString != null )
+            {
+                tags = Utils.PraseMessageTags(_argsString);
+                prefix = Utils.GetTagString(tags, "prefix");
+                Console.WriteLine($"Prefix: {prefix}");
+                if (prefix != null)
+                {
+                    _detecterMgr.RemoveDetector(prefix);
+                }
+                else
+                {
+                    // Error
+                }
+            }
+            else
+            {
+                // Error
+            }
         }
     }
 }

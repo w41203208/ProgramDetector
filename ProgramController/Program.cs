@@ -8,7 +8,7 @@ class Program
     {
         ProcessStartInfo clientStartInfo = new ProcessStartInfo 
         {
-            FileName = "D:\\MingProgram\\asp.net-learning\\UnityTest\\bin\\Debug\\net7.0\\UnityTest.exe", 
+            FileName = "D:\\MingProgram\\asp.net-learning\\ProgramDetector\\ProgramControllee\\bin\\Debug\\net7.0\\ProgramControllee.exe", 
             UseShellExecute = true,
             CreateNoWindow = false,
             WindowStyle = ProcessWindowStyle.Normal,
@@ -17,7 +17,7 @@ class Program
 
         Process? subProcess = Process.Start(clientStartInfo);
 
-        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("unity-pipe", PipeDirection.Out))
+        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("pipe", PipeDirection.Out))
         {
             Console.WriteLine("[SERVER] Current TransmissionMode: {0}.",
                 pipeServer.TransmissionMode);

@@ -1,16 +1,19 @@
-﻿namespace UnityTest
+﻿
+
+namespace UnityTest
 {
+    public enum CommandType
+    {
+        Open = 0,
+        Close = 1,
+    }
     class CommandFactory
     {
-        private DetectorManager _detectorMgr;
-        public enum CommandType
+        private DetectorManager _detecterMgr;
+        
+        public CommandFactory(DetectorManager detecterMgr) 
         {
-            Open = 0,
-            Close = 1,
-        }
-        public CommandFactory(DetectorManager dMgr) 
-        {
-            _detectorMgr = dMgr;
+            _detecterMgr = detecterMgr;
         }
 
         public ICommand? CreateCommand(CommandType type, string? msgTags)
@@ -34,37 +37,13 @@
 
         public ICommand? CreateOpenCommand(string? msgTags)
         {
-            string path = "D:\\MingProgram\\unity-learning\\build\\CoinPusher\\Coin Pusher.exe";
-            string? prefix = null;
-            if (msgTags != null)
-            {
-                prefix = Utils.GetMessageTagString(msgTags, "prefix");
-            }
-
-            return new OpenCommand(_detectorMgr, path, prefix);
+            string path = "D:\\MingProgram\\unity-learning\\build\\Coin Pusher\\Coin Pusher.exe";
+            return new OpenCommand(_detecterMgr, path, msgTags);
         }
 
         public ICommand? CreateCloseCommand(string? msgTags)
         {
-            try
-            {
-                string? prefix = null;
-                if (msgTags != null)
-                {
-                    prefix = Utils.GetMessageTagString(msgTags, "prefix")!;
-                }
-
-                if(prefix == null)
-                {
-                    new Exception("no prefix");
-                }
-                return new CloseCommand(_detectorMgr, prefix!);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-            
+            return new CloseCommand(_detecterMgr, msgTags);
         }
     }
 }
