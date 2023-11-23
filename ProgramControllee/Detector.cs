@@ -1,6 +1,7 @@
 ﻿
 
 using System.Diagnostics;
+using System.Threading;
 
 namespace UnityTest
 {
@@ -41,6 +42,7 @@ namespace UnityTest
             if(t.IsAlive)
             {
                 _t = t;
+                Console.WriteLine($"Thread State {_t.ThreadState}");
             }
         }
 
@@ -66,8 +68,8 @@ namespace UnityTest
 
             _pname = _proc.ProcessName + " - " + _prefix;
 
-            string instanceName = Utils.GetProcessInstanceName(_proc.Id);
-            Console.WriteLine(instanceName);
+            //string instanceName = Utils.GetProcessInstanceName(_proc.Id);
+            //Console.WriteLine(instanceName);
 
             //Console.WriteLine(_proc.ProcessName);
 
@@ -117,9 +119,8 @@ namespace UnityTest
                 {
                     if (_t.IsAlive)
                     {
-                        Console.WriteLine(_t.ThreadState);
-                        _t.Join();
-                        
+
+                        _t.Interrupt();
                         //_proc?.Close();
                     }
                 }
