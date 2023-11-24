@@ -84,6 +84,7 @@ namespace UnityTest
                     
                     if (timeDuration.TotalSeconds > 1)
                     {
+                        Console.Clear();
                         //// use pc
                         //PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
                         //Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
@@ -99,6 +100,7 @@ namespace UnityTest
                         Console.WriteLine($"  Paged system memory size  : {_proc.PagedSystemMemorySize64}");
                         Console.WriteLine($"  Paged memory size         : {_proc.PagedMemorySize64}");
                     }
+                    
                 } while (!_proc.WaitForExit(1000));
 
                 Console.WriteLine($"Process exit code          : {_proc.ExitCode}");

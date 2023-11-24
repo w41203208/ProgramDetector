@@ -12,7 +12,6 @@ class Program
             UseShellExecute = true,
             CreateNoWindow = false,
             WindowStyle = ProcessWindowStyle.Normal,
-
         };
 
         Process? subProcess = Process.Start(clientStartInfo);
