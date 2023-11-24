@@ -2,11 +2,7 @@
 
 namespace UnityTest
 {
-    class Message
-    {
-        public string? Type { get; set; }
-        public string? Tags { get; set; }
-    }
+    
 
     class Utils
     {
@@ -18,37 +14,7 @@ namespace UnityTest
         }
 
         // may have to fix this function 
-        public static Message SplitMessageString(string msg)
-        {
-            string[] words = msg.Split(" ");
-            
-            if (words.Length == 1)
-            {
-                return new Message
-                {
-                    Type = words[0],
-                    Tags = null,
-                };
-            }
-
-            if (words.Length > 2 || words.Length < 1)
-            {
-                // Error format is invalid
-                return new Message
-                {
-                    Type = null,
-                    Tags = null,
-                };
-            }
-            else
-            {
-                return new Message
-                {
-                    Type = words[0],
-                    Tags = words[1]
-                };
-            }
-        }
+       
         public static List<string> PraseMessageTags(string tagsStr)
         {
 

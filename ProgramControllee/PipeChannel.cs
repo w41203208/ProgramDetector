@@ -35,7 +35,7 @@ namespace UnityTest
 
         private void handle(string input)
         {
-            Message msg = Utils.SplitMessageString(input);
+            Message msg = splitMessageString(input);
             ICommand? cmd = null;
             switch (msg.Type)
             {
@@ -47,6 +47,44 @@ namespace UnityTest
                     break;
             }
             _cmdMgr.AddCommand(cmd);
+        }
+
+        private Message splitMessageString(string msg)
+        {
+            string[] words = msg.Split(" ");
+
+            if (words.Length == 1)
+            {
+                return new Message
+                {
+                    Type = words[0],
+                    Tags = null,
+                };
+            }
+
+            if (words.Length > 2 || words.Length < 1)
+            {
+                // Error format is invalid
+                return new Message
+                {
+                    Type = null,
+                    Tags = null,
+                };
+            }
+            else
+            {
+                return new Message
+                {
+                    Type = words[0],
+                    Tags = words[1]
+                };
+            }
+        }
+
+        private class Message
+        {
+            public string? Type { get; set; }
+            public string? Tags { get; set; }
         }
     }
 }
