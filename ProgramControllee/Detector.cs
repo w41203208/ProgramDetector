@@ -16,6 +16,7 @@ namespace UnityTest
         private readonly string _prefix;
         private readonly string? _args;
         private readonly string? _path;
+        private bool _closeSignal;
         private DateTime _lastUpdateTime;
 
         private Thread? _t;
@@ -27,6 +28,7 @@ namespace UnityTest
             _path = path;
             _args = args;
             _proc = null;
+            _closeSignal = true;
             _lastUpdateTime = DateTime.Now;
         }
         public string GetPrefix()
@@ -37,7 +39,7 @@ namespace UnityTest
         public void Run()
         {
             Thread t = new Thread(startProcess);
-            t.Start();
+            t.Start(_closeSignal);
 
             if(t.IsAlive)
             {
@@ -46,8 +48,10 @@ namespace UnityTest
             }
         }
 
-        private void startProcess()
+        private void startProcess(object test)
         {
+            bool tt = (bool)test;
+
             if(_path == null)
             {
                 return;
@@ -84,24 +88,26 @@ namespace UnityTest
                     
                     if (timeDuration.TotalSeconds > 1)
                     {
-                        Console.Clear();
+                        //Console.Clear();
                         //// use pc
                         //PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
                         //Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
 
                         Console.WriteLine($"{_pname}");
-                        Console.WriteLine("-------------------------------------");
-                        Console.WriteLine($"  Physical memory usage     : {_proc.WorkingSet64}");
-                        Console.WriteLine($"  Base priority             : {_proc.BasePriority}");
-                        Console.WriteLine($"  Priority class            : {_proc.PriorityClass}");
-                        Console.WriteLine($"  User processor time       : {_proc.UserProcessorTime}");
-                        Console.WriteLine($"  Privileged processor time : {_proc.PrivilegedProcessorTime}");
-                        Console.WriteLine($"  Total processor time      : {_proc.TotalProcessorTime}");
-                        Console.WriteLine($"  Paged system memory size  : {_proc.PagedSystemMemorySize64}");
-                        Console.WriteLine($"  Paged memory size         : {_proc.PagedMemorySize64}");
+                        //Console.WriteLine("-------------------------------------");
+                        //Console.WriteLine($"  Physical memory usage     : {_proc.WorkingSet64}");
+                        //Console.WriteLine($"  Base priority             : {_proc.BasePriority}");
+                        //Console.WriteLine($"  Priority class            : {_proc.PriorityClass}");
+                        //Console.WriteLine($"  User processor time       : {_proc.UserProcessorTime}");
+                        //Console.WriteLine($"  Privileged processor time : {_proc.PrivilegedProcessorTime}");
+                        //Console.WriteLine($"  Total processor time      : {_proc.TotalProcessorTime}");
+                        //Console.WriteLine($"  Paged system memory size  : {_proc.PagedSystemMemorySize64}");
+                        //Console.WriteLine($"  Paged memory size         : {_proc.PagedMemorySize64}");
+                        Console.WriteLine($"  Print in: {test}");
                     }
+
                     
-                } while (!_proc.WaitForExit(1000));
+                } while (!_proc.WaitForExit(1000) && tt);
 
                 Console.WriteLine($"Process exit code          : {_proc.ExitCode}");
             }
@@ -121,8 +127,8 @@ namespace UnityTest
                 {
                     if (_t.IsAlive)
                     {
-
-                        _t.Interrupt();
+                        _closeSignal = true;
+                        Console.WriteLine($"Print out: {_closeSignal}");
                         //_proc?.Close();
                     }
                 }
