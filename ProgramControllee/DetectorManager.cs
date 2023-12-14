@@ -15,10 +15,11 @@ namespace UnityTest
         public void RemoveDetector(string prefix) {
             if (detectorMap.ContainsKey(prefix))
             {
-                Detector? detector = null;
+                Detector? detector;
                 detectorMap.TryGetValue(prefix, out detector);
                 if(detector != null)
                 {
+                    Console.WriteLine($"Close Deterctor: {prefix}");
                     detector.Stop();
                     detectorMap.Remove(prefix);
                 }

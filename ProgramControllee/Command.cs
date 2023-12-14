@@ -27,6 +27,7 @@ namespace UnityTest
         }
         public void Execute()
         {
+            Console.WriteLine($"Open Handle Execute");
             string? prefix = null;
             string? args = null;
             List<string> tags = new();
@@ -56,6 +57,7 @@ namespace UnityTest
         }
         public void Execute()
         {
+            Console.WriteLine($"Close Handle Execute");
             List<string> tags = new();
             string? prefix;
             if (_argsString != null )

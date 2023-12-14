@@ -38,83 +38,109 @@ namespace UnityTest
 
         public void Run()
         {
-            Thread t = new Thread(startProcess);
-            t.Start(_closeSignal);
+            Thread t = new Thread(StartProccess);
+            t.Start();
 
-            if(t.IsAlive)
+            if (t.IsAlive)
             {
                 _t = t;
                 Console.WriteLine($"Thread State {_t.ThreadState}");
             }
         }
 
-        private void startProcess(object test)
+        private void StartProccess()
         {
-            bool tt = (bool)test;
-
-            if(_path == null)
+            if (_path == null)
             {
                 return;
             }
+
+            // set proccess info
             ProcessStartInfo startInfo;
             if (_args != null)
             {
                 startInfo = new ProcessStartInfo(_path, _args);
             }
-            else{
+            else
+            {
                 startInfo = new ProcessStartInfo(_path);
             }
-            
 
             startInfo.WindowStyle = ProcessWindowStyle.Minimized;
-
-            _proc = Process.Start(startInfo);
-
-            _pname = _proc.ProcessName + " - " + _prefix;
-
             //string instanceName = Utils.GetProcessInstanceName(_proc.Id);
             //Console.WriteLine(instanceName);
-
             //Console.WriteLine(_proc.ProcessName);
 
             try
             {
-                
-                do
+                using(_proc = Process.Start(startInfo))
                 {
-                    var now = DateTime.Now;
-                    var timeDuration = now - _lastUpdateTime;
-                    _lastUpdateTime = now;
-                    
-                    if (timeDuration.TotalSeconds > 1)
+                    if (_proc != null && !_proc.HasExited)
                     {
-                        //Console.Clear();
-                        //// use pc
-                        //PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
-                        //Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
+                        _pname = _proc.ProcessName + " - " + _prefix;
 
-                        Console.WriteLine($"{_pname}");
-                        //Console.WriteLine("-------------------------------------");
-                        //Console.WriteLine($"  Physical memory usage     : {_proc.WorkingSet64}");
-                        //Console.WriteLine($"  Base priority             : {_proc.BasePriority}");
-                        //Console.WriteLine($"  Priority class            : {_proc.PriorityClass}");
-                        //Console.WriteLine($"  User processor time       : {_proc.UserProcessorTime}");
-                        //Console.WriteLine($"  Privileged processor time : {_proc.PrivilegedProcessorTime}");
-                        //Console.WriteLine($"  Total processor time      : {_proc.TotalProcessorTime}");
-                        //Console.WriteLine($"  Paged system memory size  : {_proc.PagedSystemMemorySize64}");
-                        //Console.WriteLine($"  Paged memory size         : {_proc.PagedMemorySize64}");
-                        Console.WriteLine($"  Print in: {test}");
+                        do
+                        {
+                            var now = DateTime.Now;
+                            var timeDuration = now - _lastUpdateTime;
+                            _lastUpdateTime = now;
+
+                            if (timeDuration.TotalSeconds > 1)
+                            {
+                                Console.Clear();
+                                //// use pc
+                                //PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", instanceName, true);
+                                //Console.WriteLine("CPU: {0:n1}%", pc.NextValue());
+
+                                Console.WriteLine($"{_pname}");
+                                Console.WriteLine("-------------------------------------");
+                                Console.WriteLine($"  Physical memory usage     : {_proc.WorkingSet64}");
+                                Console.WriteLine($"  Base priority             : {_proc.BasePriority}");
+                                Console.WriteLine($"  Priority class            : {_proc.PriorityClass}");
+                                Console.WriteLine($"  User processor time       : {_proc.UserProcessorTime}");
+                                Console.WriteLine($"  Privileged processor time : {_proc.PrivilegedProcessorTime}");
+                                Console.WriteLine($"  Total processor time      : {_proc.TotalProcessorTime}");
+                                Console.WriteLine($"  Paged system memory size  : {_proc.PagedSystemMemorySize64}");
+                                Console.WriteLine($"  Paged memory size         : {_proc.PagedMemorySize64}");
+                                Console.WriteLine($"  Print signal: {_closeSignal}");
+                            }
+                        } while (!_proc.WaitForExit(1000) && _closeSignal);
+
+                        Console.WriteLine($"  Process exit code          : {_proc.ExitCode}");
+
+                        //Checking proccess has closed
+                        if (_proc.HasExited)
+                        {
+                            Console.WriteLine($"Proccess - [{_pname}] is closed");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Proccess - [{_pname}] isn't closed");
+                        }
+
                     }
-
-                    
-                } while (!_proc.WaitForExit(1000) && tt);
-
-                Console.WriteLine($"Process exit code          : {_proc.ExitCode}");
+                }
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
-                _proc.Kill();
+                Console.WriteLine($"Error: {e}");
+
+                if (_proc != null)
+                {
+                    // kill proccess
+                    if (!_proc.CloseMainWindow())
+                    {
+                        _proc.Kill();
+                    }
+                }
+            }
+            finally
+            {
+                if (_proc != null)
+                {
+                    _proc.Dispose();
+                }
+                _proc = null;
             }
             
         }
@@ -123,13 +149,14 @@ namespace UnityTest
         {
             try
             {
-                if (_t != null)
+                if (_proc != null)
                 {
-                    if (_t.IsAlive)
+                    if (!_proc.HasExited)
                     {
-                        _closeSignal = true;
-                        Console.WriteLine($"Print out: {_closeSignal}");
-                        //_proc?.Close();
+                        //_closeSignal = false;
+                        _proc.CloseMainWindow();
+
+                        //_proc.CloseMainWindow();
                     }
                 }
             }
@@ -137,8 +164,6 @@ namespace UnityTest
             {
 
             }
-            
         }
-
     }
 }
